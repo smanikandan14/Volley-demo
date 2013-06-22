@@ -35,6 +35,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".JSONObjectRequestActvity"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".GSONResponseParsingActivity"
+            android:label="@string/app_name" />
+        
     </application>
 
 </manifest>
