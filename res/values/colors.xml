@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--++++++++++++++++++++++ Background +++++++++++++++++++++++-->
+    <color name="search_bar_normal_background_color">@color/text_white</color>
+    <color name="bg_white">#FFFFFF</color>
+    <color name="bg_black">#000000</color>
+    <color name="bg_light_cyan">#f1edfd</color>
+    <color name="bg_search_bar">#ad79bc</color>
+    <!--+++++++++++++++++++++++++ Text ++++++++++++++++++++++++++-->
+    <color name="text_black">#000000</color>
+    <color name="text_dark_gray">#1E1E1E</color>
+    <color name="text_gray">#828796</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_orange">#bb6f04</color>
+    <color name="button_normal_text_color">@color/text_black</color>
+    <color name="text_red">#FF0000</color>
+    <color name="text_purple">#653e7d</color>
+    <color name="text_light_gray">#7f7f7f</color>
+    <color name="text_tab_selected">#eeeeee</color>
+    <color name="text_tab_normal">#b9b9b9</color>
+    <color name="text_tab_shadow">#67587686</color>
+    
+	<!-- Venue list divider -->
+	<color name="venue_list_divider">#e0e0e0</color>
+</resources>
