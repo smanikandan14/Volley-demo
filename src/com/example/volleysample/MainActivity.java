@@ -12,7 +12,8 @@ public class MainActivity extends Activity {
 	private Button mStringRequest;
 	private Button mGsonParse;
 	private Button mNetworkImage;
-
+	private Button mSslRequest;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -31,7 +32,7 @@ public class MainActivity extends Activity {
 		mStringRequest.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(MainActivity.this,JSONObjectRequestActvity.class));
+				startActivity(new Intent(MainActivity.this,StringObjectRequestActivity.class));
 			}
 		});
 
@@ -40,7 +41,7 @@ public class MainActivity extends Activity {
 		mGsonParse.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(MainActivity.this,GSONResponseParsingActivity.class));
+				startActivity(new Intent(MainActivity.this,GSONObjectRequestActivity.class));
 			}
 		});
 
@@ -48,10 +49,18 @@ public class MainActivity extends Activity {
 		mNetworkImage.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(MainActivity.this,JSONObjectRequestActvity.class));
+				startActivity(new Intent(MainActivity.this,NetworkImageActivity.class));
 			}
 		});
-		
+
+		mSslRequest = (Button) findViewById(R.id.ssl_connection);
+		mSslRequest.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(MainActivity.this,SSLConnectionActivity.class));
+			}
+		});
+
 	}
 
 }

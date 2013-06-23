@@ -51,6 +51,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         int POST = 1;
         int PUT = 2;
         int DELETE = 3;
+        int PATCH = 4; // Added to handle PATCH request.
     }
 
     /** An event log tracing the lifetime of this request; for debugging. */

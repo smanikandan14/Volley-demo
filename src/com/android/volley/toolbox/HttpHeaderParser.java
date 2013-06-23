@@ -59,6 +59,7 @@ public class HttpHeaderParser {
         if (headerValue != null) {
             hasCacheControl = true;
             String[] tokens = headerValue.split(",");
+            
             for (int i = 0; i < tokens.length; i++) {
                 String token = tokens[i].trim();
                 if (token.equals("no-cache") || token.equals("no-store")) {
@@ -89,6 +90,7 @@ public class HttpHeaderParser {
             // Default semantic for Expire header in HTTP specification is softExpire.
             softExpire = now + (serverExpires - serverDate);
         }
+        
 
         Cache.Entry entry = new Cache.Entry();
         entry.data = response.data;

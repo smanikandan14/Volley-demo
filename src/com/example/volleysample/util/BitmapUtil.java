@@ -1,4 +1,4 @@
-package com.android.volley.util;
+package com.example.volleysample.util;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;

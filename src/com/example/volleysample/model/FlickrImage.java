@@ -1,4 +1,4 @@
-package com.android.volley.model;
+package com.example.volleysample.model;
 
 public class FlickrImage {
 
