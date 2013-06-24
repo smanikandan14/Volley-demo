@@ -42,6 +42,14 @@ import com.example.volleysample.R;
 
 import com.example.volleysample.app.VolleySampleApplication;
 
+/**
+ *
+ * Modified EasySSLSocketFactory class written by olamy.
+ * Based on the boolean 'isConnectingYourServer' it decides which Client KeyStore and TrustManagers to use.
+ * But this can be improved much better by taking KeyStore and TrustStore as inputs and can be more generic.
+ * @author Mani Selvaraj
+ *
+ */
 
 public class EasySSLSocketFactory implements LayeredSocketFactory {
 
@@ -53,13 +61,19 @@ public class EasySSLSocketFactory implements LayeredSocketFactory {
     }
     
     
+    /*
+     * In case of self signed certificates on Server. Two things needs to be taken care
+     *  1)Authenticate to the HTTPS server using a private key. 
+     *  2)Validate the identity of the HTTPS server against a list of trusted certificates
+     * 
+     * Ref - http://developer.android.com/reference/org/apache/http/conn/ssl/SSLSocketFactory.html
+     */
     private static SSLContext createEasySSLContext() throws IOException {
         try {
         	
-            // Client should send the valid key to Server 
-
+            // Client should authenticate itself with the valid certificate to Server.
         	InputStream clientStream = VolleySampleApplication.getContext().getResources().openRawResource(R.raw.production_test_client);
-        	char[] password = "kiSfsEPbNgulYIv7zU8d".toCharArray();
+        	char[] password = "XXXXXXXXXXXXX".toCharArray();
 	        
 	        KeyStore keyStore = KeyStore.getInstance("PKCS12");
 	        keyStore.load(clientStream, password);
@@ -68,13 +82,14 @@ public class EasySSLSocketFactory implements LayeredSocketFactory {
             keyManagerFactory.init(keyStore, password);
             
             
-	        // CA key obtained from server.
+	        // Client should also add the CA certificate obtained from server and create TrustManager from it for the client to validate the 
+            // identity of the server.
 	        KeyStore trustStore  = KeyStore.getInstance( "BKS");
 	        InputStream instream = null;
 	        instream = VolleySampleApplication.getContext().getResources().openRawResource(R.raw.production_test_ca);
 
 	        try {
-	            trustStore.load(instream, "edenpod".toCharArray());
+	            trustStore.load(instream, "XXXXXXXX".toCharArray());
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        } finally {
@@ -85,7 +100,7 @@ public class EasySSLSocketFactory implements LayeredSocketFactory {
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
             tmf.init(trustStore);
             
-            // Create an SSLContext that uses our TrustManager
+            // Create an SSLContext that uses our TrustManager & Keystore
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(keyManagerFactory.getKeyManagers(), tmf.getTrustManagers(), null);
 
@@ -96,6 +111,9 @@ public class EasySSLSocketFactory implements LayeredSocketFactory {
         }
     }
 
+    /*
+     *  Creates SSLContext and initialises with the IgnoreTrustManager to trust all secured server. Basically ignoring the trust to connect to server. 
+     */
     private static SSLContext createIgnoreSSLContext() throws IOException {
         try {
         	SSLContext context = SSLContext.getInstance("TLS");
@@ -107,6 +125,12 @@ public class EasySSLSocketFactory implements LayeredSocketFactory {
         }
     }
     
+    /**
+     * If you want to add more trusted certificates ( if self signed) for different sites, you should use
+     * EasyX509TrustManager and create a instance with corresponding KeyStore and then add to the SSLContext.
+     * @return
+     * @throws IOException
+     */
     private SSLContext getSSLContext() throws IOException {
         if (this.sslcontext == null) {
         	if(isConnectingYourServer) {

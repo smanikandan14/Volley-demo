@@ -1,3 +1,19 @@
+/**
+ * Copyright 2013 Mani Selvaraj
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.volleysample;
 
 import java.io.File;
@@ -25,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,17 +53,25 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageCache;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 import com.example.volleysample.util.BitmapUtil;
+
+
+/**
+ * Demonstrates how to execute ImageRequest and NetworkImageView to download a image from a URL using Volley library.
+ * @author Mani Selvaraj
+ *
+ */
 
 public class NetworkImageActivity extends Activity {
 
 	private Button mTrigger;
 	private RequestQueue mVolleyQueue;
 	private ListView mListView;
+	private ImageView mImageView;
+	private NetworkImageView mNetworkImageView;
 	private EfficientAdapter mAdapter;
 	private ProgressDialog mProgress;
 	private List<DataModel> mDataList;
@@ -139,7 +164,7 @@ public class NetworkImageActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.json_object_layout);
+		setContentView(R.layout.networkimage_layout);
 		
 		actionBarSetup();
 		
@@ -149,12 +174,14 @@ public class NetworkImageActivity extends Activity {
 		int max_cache_size = 1000000;
 		mImageLoader = new ImageLoader(mVolleyQueue, new DiskBitmapCache(getCacheDir(),max_cache_size));
 		
-		//Memory cache is always faster than DiskCache. Check it our for yourself.
+		//Memorycache is always faster than DiskCache. Check it our for yourself.
 		//mImageLoader = new ImageLoader(mVolleyQueue, new BitmapCache(max_cache_size));
 
 		mDataList = new ArrayList<DataModel>();
 		
 		mListView = (ListView) findViewById(R.id.image_list);
+		mImageView = (ImageView) findViewById(R.id.imageview);
+		mNetworkImageView = (NetworkImageView) findViewById(R.id.networkimageview);
 		mTrigger = (Button) findViewById(R.id.send_http);
 		
 		mAdapter = new EfficientAdapter(this);
@@ -167,13 +194,24 @@ public class NetworkImageActivity extends Activity {
 				makeSampleHttpRequest();
 			}
 		});
+		
+		String testUrlToDownloadImage1 = "http://farm3.static.flickr.com/2833/9112621564_32bdfd58f3_q.jpg";
+		String testUrlToDownloadImage2 = "http://farm3.static.flickr.com/2848/9110760994_c8dc834397_q.jpg";
+			
+		mImageLoader.get(testUrlToDownloadImage1, 
+                       ImageLoader.getImageListener(mImageView, 
+                                                     R.drawable.flickr, 
+                                                     android.R.drawable.ic_dialog_alert));
+		
+		mNetworkImageView.setImageUrl(testUrlToDownloadImage2, mImageLoader);
+
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void actionBarSetup() {
 	  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 	    ActionBar ab = getActionBar();
-	    ab.setTitle("JSONRequest");
+	    ab.setTitle("NetworkImageView");
 	  }
 	}
 
@@ -229,7 +267,7 @@ public class NetworkImageActivity extends Activity {
 				showToast(error.getMessage());
 			}
 		});
-		jsonObjRequest.setShouldCache(true);
+
 		jsonObjRequest.setTag(TAG_REQUEST);	
 		mVolleyQueue.add(jsonObjRequest);
 	}
@@ -325,7 +363,6 @@ public class NetworkImageActivity extends Activity {
         class ViewHolder {
             TextView title;
             NetworkImageView image;
-            ImageRequest imageRequest;
         }	
         
 	}	

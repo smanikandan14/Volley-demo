@@ -1,3 +1,19 @@
+/**
+ * Copyright 2013 Mani Selvaraj
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.volleysample;
 
 import android.annotation.TargetApi;
@@ -113,6 +129,15 @@ public class StringObjectRequestActivity extends Activity {
 					showToast(error.getMessage());
 				}
 			});
+
+			// To EXPERIMENT. Enable response caching to quickly fetch the response from cache, if set true.
+			// Volley decides whether to cache the response or not, based on response headers obtained. Some of the parameters
+			// to look for are Cache-control,maxAge, Expires.
+			
+			// In case of weather api, the response headers has "Cache-Control: no-cache, must-revalidate" In this case, even if 
+			// setShouldCache() api is set true, Volley decides not to store the response, because server has sent response headers as "must-revalidate"
+			// So storing response doesnt make sense here. Some of these intelligences are implemented already in Volley, you need not take the burden of
+			// parsing response headers.
 			
 			stringRequest.setShouldCache(true);
 			stringRequest.setTag(TAG_REQUEST);	

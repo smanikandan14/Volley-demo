@@ -1,3 +1,19 @@
+/**
+ * Copyright 2013 Mani Selvaraj
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.volleysample;
 
 import org.json.JSONObject;
@@ -19,6 +35,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.volleysample.ssl.SslHttpStack;
+
+/**
+ * Demonstrates how to execute Https (SSL) Connectivity Request using Volley library.
+ * 
+ * @author Mani Selvaraj
+ *
+ */
 
 public class SSLConnectionActivity extends Activity {
 
@@ -60,6 +83,10 @@ public class SSLConnectionActivity extends Activity {
 		super.onDestroy();
 	}
 	
+	/*
+	 * Dont forget to cancel the request when the UI is not visible.
+	 * @see android.app.Activity#onStop()
+	 */
 	public void onStop() {
 		super.onStop();
 		if(mProgress != null)
@@ -87,26 +114,26 @@ public class SSLConnectionActivity extends Activity {
 		Toast.makeText(SSLConnectionActivity.this, msg, Toast.LENGTH_LONG).show();
 	}
 	
+	/*
+	 * The endpoint is hidden.Please use your correct endpoint to test Secured Http request.
+	 */
 	private void makeSampleHttpsRequest() {
 		
-		String url = "https://54.251.251.214/masterswitch/?android=1.0";
+		String url = "https://[YOUR END POINT]/masterswitch/?android=1.0";
 		
 		
 		JsonObjectRequest jsonObjRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				System.out.println("####### Response JsonObjectRequest SUCCESS  ######## "+response.toString());
 				stopProgress();
 			}
 		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				stopProgress();
-				System.out.println("####### onErrorResponse ########## "+error.getMessage()); 
 				showToast(error.getMessage());
 			}
 		});
-		jsonObjRequest.setShouldCache(true);
 		jsonObjRequest.setTag(TAG_REQUEST);	
 		mVolleyQueue.add(jsonObjRequest);
 	}

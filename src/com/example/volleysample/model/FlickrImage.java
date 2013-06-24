@@ -1,5 +1,12 @@
 package com.example.volleysample.model;
 
+
+/**
+ * Holds the data for Flickr photo that is used to display Flickr Images in ListViews.
+ * 
+ * @author Mani Selvaraj
+ *
+ */
 public class FlickrImage {
 
 	

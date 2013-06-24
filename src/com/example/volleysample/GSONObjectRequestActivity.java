@@ -56,7 +56,7 @@ import com.example.volleysample.model.FlickrResponsePhotos;
 import com.example.volleysample.util.BitmapUtil;
 
 /**
- * Demonstrates how to execute Gson Request.
+ * Demonstrates how to execute Gson Request using Volley library.
  * @author Mani Selvaraj
  *
  */
