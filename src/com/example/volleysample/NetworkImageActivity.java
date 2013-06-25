@@ -99,7 +99,7 @@ public class NetworkImageActivity extends Activity {
 		
 	}
 	
-	public class BitmapCache extends LruCache implements ImageCache {
+	public class BitmapCache extends LruCache<String,Bitmap> implements ImageCache {
 	    public BitmapCache(int maxSize) {
 	        super(maxSize);
 	    }

@@ -51,7 +51,7 @@ import com.android.volley.toolbox.HttpStack;
 
 /**
  * Custom implementation of com.android.volley.toolboox.HttpStack
- * Uses apache HttpClient-4.2.5 jar. You can download it from here
+ * Uses apache HttpClient-4.2.5 jar to take care of . You can download it from here
  * http://hc.apache.org/downloads.cgi
  * 
  * @author Mani Selvaraj
@@ -145,6 +145,7 @@ public class SslHttpStack implements HttpStack {
                 setEntityIfNonEmptyBody(putRequest, request);
                 return putRequest;
             }
+            // Added in source code of Volley libray.
             case Method.PATCH: {
             	HttpPatch patchRequest = new HttpPatch(request.getUrl());
             	patchRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());

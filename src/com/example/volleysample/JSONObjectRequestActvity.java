@@ -46,9 +46,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.ImageLoader;
@@ -95,7 +102,7 @@ public class JSONObjectRequestActvity extends Activity {
 		
 	}
 	
-	public class BitmapCache extends LruCache implements ImageCache {
+	public class BitmapCache extends LruCache<String,Bitmap> implements ImageCache {
 	    public BitmapCache(int maxSize) {
 	        super(maxSize);
 	    }
@@ -243,11 +250,27 @@ public class JSONObjectRequestActvity extends Activity {
 
 			@Override
 			public void onErrorResponse(VolleyError error) {
+				if( error instanceof NetworkError) {
+					System.out.println("######## GSONRequest NetworkError ####### ");
+				} else if( error instanceof ServerError) {
+					System.out.println("######## GSONRequest ServerError ####### ");
+				} else if( error instanceof AuthFailureError) {
+					System.out.println("######## GSONRequest AuthFailureError ####### ");
+				} else if( error instanceof ParseError) {
+					System.out.println("######## GSONRequest ParseError ####### ");
+				} else if( error instanceof NoConnectionError) {
+					System.out.println("######## GSONRequest NoConnectionError ####### ");
+				} else if( error instanceof TimeoutError) {
+					System.out.println("######## GSONRequest TimeoutError ####### ");
+				}
+
 				stopProgress();
 				showToast(error.getMessage());
 			}
 		});
 		
+		//Set a retry policy in case of SocketTimeout & ConnectionTimeout Exceptions. Volley does retry for you if you have specified the policy.
+		jsonObjRequest.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 		jsonObjRequest.setTag(TAG_REQUEST);	
 		mVolleyQueue.add(jsonObjRequest);
 	}
@@ -290,7 +313,6 @@ public class JSONObjectRequestActvity extends Activity {
 					String server = jsonObj.getString("server");
 					
 					String imageUrl = "http://farm" + farm + ".static.flickr.com/" + server + "/" + id + "_" + secret + "_t.jpg";
-					System.out.println("#######  parseFlickrImageResponse   ######## "+imageUrl);
 					DataModel model = new DataModel();
 					model.setImageUrl(imageUrl);
 					model.setTitle(jsonObj.getString("title"));
