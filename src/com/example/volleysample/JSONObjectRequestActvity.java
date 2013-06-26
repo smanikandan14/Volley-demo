@@ -62,6 +62,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageCache;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.volleysample.toolbox.FadeInImageListener;
 import com.example.volleysample.util.BitmapUtil;
 
 /**
@@ -357,10 +358,12 @@ public class JSONObjectRequestActvity extends Activity {
             }
             
             holder.title.setText(mDataList.get(position).getTitle());
-            mImageLoader.get(mDataList.get(position).getImageUrl(), 
+            mImageLoader.get(mDataList.get(position).getImageUrl(), new FadeInImageListener(holder.image,JSONObjectRequestActvity.this));
+            
+/*            mImageLoader.get(mDataList.get(position).getImageUrl(), 
             							ImageLoader.getImageListener(holder.image, R.drawable.flickr, android.R.drawable.ic_dialog_alert),
             							//You can specify width & height of the bitmap to be scaled down when the image is downloaded.
-            							50,50);
+            							50,50); */
             return convertView;
         }
         

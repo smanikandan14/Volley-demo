@@ -7,11 +7,20 @@
     tools:context=".MainActivity" >
 
     <Button
+        android:id="@+id/networkimage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:gravity="center"
+        android:text="ImageLoading" />
+    
+    <Button
         android:id="@+id/json_request"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="JSONObjectRequest And ImageLoader" />
+        android:layout_below="@id/networkimage"
+        android:text="JSONObjectRequest" />
 
     <Button
         android:id="@+id/string_request"
@@ -29,23 +38,14 @@
         android:layout_marginTop="@dimen/margin_normal"
         android:layout_below="@id/string_request"
         android:gravity="center"
-        android:text="GSON Response Parsing" />
+        android:text="GSON Request" />
     
-    <Button
-        android:id="@+id/networkimage"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_normal"
-        android:layout_below="@id/gson_response"
-        android:gravity="center"
-        android:text="NetworkImageView" />
-
     <Button
         android:id="@+id/ssl_connection"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_normal"
-        android:layout_below="@id/networkimage"
+        android:layout_below="@id/gson_response"
         android:gravity="center"
         android:text="SSL Connection" />
     

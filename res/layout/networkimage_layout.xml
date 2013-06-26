@@ -9,16 +9,32 @@
     tools:context=".MainActivity" >
 
     <ImageView
-        android:id="@+id/imageview"
+        android:id="@+id/imageview1"
         android:layout_width="@dimen/image_extra_large"
         android:layout_height="@dimen/image_extra_large"/>
+    
+    <ImageView
+        android:id="@+id/imageview2"
+        android:layout_width="@dimen/image_extra_large"
+        android:layout_height="@dimen/image_extra_large"
+        android:layout_marginLeft="@dimen/margin_normal"
+        android:layout_toRightOf="@id/imageview1"/>
+
+    <ImageView
+        android:id="@+id/imageview3"
+        android:layout_width="@dimen/image_extra_large"
+        android:layout_height="@dimen/image_extra_large"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_below="@id/imageview2"/>
     
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/networkimageview"
         android:layout_width="@dimen/image_extra_large"
         android:layout_height="@dimen/image_extra_large"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_below="@id/imageview2"
         android:layout_marginLeft="@dimen/margin_normal"
-        android:layout_toRightOf="@id/imageview"
+        android:layout_toRightOf="@id/imageview3"
         android:background="@drawable/flickr"/>
     
     <Button

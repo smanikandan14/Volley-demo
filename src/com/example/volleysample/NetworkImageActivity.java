@@ -53,9 +53,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageCache;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
+import com.example.volleysample.toolbox.FadeInImageListener;
 import com.example.volleysample.util.BitmapUtil;
 
 
@@ -70,7 +72,9 @@ public class NetworkImageActivity extends Activity {
 	private Button mTrigger;
 	private RequestQueue mVolleyQueue;
 	private ListView mListView;
-	private ImageView mImageView;
+	private ImageView mImageView1;
+	private ImageView mImageView2;
+	private ImageView mImageView3;
 	private NetworkImageView mNetworkImageView;
 	private EfficientAdapter mAdapter;
 	private ProgressDialog mProgress;
@@ -150,8 +154,6 @@ public class NetworkImageActivity extends Activity {
 			
 			downSized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 			byte[] data = baos.toByteArray();
-			
-			System.out.println("####### Size of bitmap is ######### "+url+" : "+data.length);
 	        entry.data = data ; */
 			
 	        entry.data = BitmapUtil.convertBitmapToBytes(bitmap) ;
@@ -180,7 +182,9 @@ public class NetworkImageActivity extends Activity {
 		mDataList = new ArrayList<DataModel>();
 		
 		mListView = (ListView) findViewById(R.id.image_list);
-		mImageView = (ImageView) findViewById(R.id.imageview);
+		mImageView1 = (ImageView) findViewById(R.id.imageview1);
+		mImageView2 = (ImageView) findViewById(R.id.imageview2);
+		mImageView3 = (ImageView) findViewById(R.id.imageview3);
 		mNetworkImageView = (NetworkImageView) findViewById(R.id.networkimageview);
 		mTrigger = (Button) findViewById(R.id.send_http);
 		
@@ -198,12 +202,43 @@ public class NetworkImageActivity extends Activity {
 		String testUrlToDownloadImage1 = "http://farm3.static.flickr.com/2833/9112621564_32bdfd58f3_q.jpg";
 		String testUrlToDownloadImage2 = "http://farm3.static.flickr.com/2848/9110760994_c8dc834397_q.jpg";
 			
-		mImageLoader.get(testUrlToDownloadImage1, 
-                       ImageLoader.getImageListener(mImageView, 
-                                                     R.drawable.flickr, 
-                                                     android.R.drawable.ic_dialog_alert));
+		/* Demonstrating 3 ways of image downloading.
+		  1 - Using ImageLoader and passing a url and imageListener. Additionally u can pass w & h
+		  2 - User NetworkImageView and pass a url & ImageLoader
+		  
+		  The above 2 uses underlying 'ImageRequest' to initiate the download.
+		  3 - Directly use ImageRequest api, by passing url, w & h, listeners, and BitmapConfig
+		  It has default retry mechanism i set to 2 maximum retries.
+		*/
+
+		//1)
+        mImageLoader.get(testUrlToDownloadImage1, 
+							ImageLoader.getImageListener(mImageView1, 
+															R.drawable.flickr, 
+															android.R.drawable.ic_dialog_alert),
+							//You can specify width & height of the bitmap to be scaled down when the image is downloaded.
+							50,50);
+
+        //1 & 2) are almost same. Demonstrating you can apply animations while showing the downloaded image.
+        // You can use nice entry animations while showing images in a listview.Uses custom implemented 'FadeInImageListener'.
+		mImageLoader.get(testUrlToDownloadImage2, new FadeInImageListener(mImageView2,this));
 		
-		mNetworkImageView.setImageUrl(testUrlToDownloadImage2, mImageLoader);
+		//3)
+		ImageRequest imgRequest = new ImageRequest(testUrlToDownloadImage2, new Response.Listener<Bitmap>() {
+				@Override
+				public void onResponse(Bitmap response) {
+					mImageView3.setImageBitmap(response);
+				}
+			}, 0, 0, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					mImageView3.setImageResource(R.drawable.ic_launcher);
+				}
+			});
+		mVolleyQueue.add(imgRequest);
+		
+		//4)
+		mNetworkImageView.setImageUrl(testUrlToDownloadImage1, mImageLoader);
 
 	}
 
@@ -211,7 +246,7 @@ public class NetworkImageActivity extends Activity {
 	private void actionBarSetup() {
 	  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 	    ActionBar ab = getActionBar();
-	    ab.setTitle("NetworkImageView");
+	    ab.setTitle("ImageLoading");
 	  }
 	}
 
