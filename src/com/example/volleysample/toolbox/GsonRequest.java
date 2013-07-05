@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.volleysample;
+package com.example.volleysample.toolbox;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -25,6 +25,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyLog;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
@@ -40,10 +41,15 @@ import com.google.gson.JsonSyntaxException;
 
 public class GsonRequest<T> extends Request<T>{
 
+    /** Charset for request. */
+    private static final String PROTOCOL_CHARSET = "utf-8";
+
+    /** Content type for request. */
+    private static final String PROTOCOL_CONTENT_TYPE =
+        String.format("application/json; charset=%s", PROTOCOL_CHARSET);
+
     private final Listener<T> mListener;
 
-    // Request body is not taken care in this implementation.. If you have any POST api to use, 
-    // please implement getBody() function as in JsonRequest<T> implementation.
     private final String mRequestBody;
     
     private Gson mGson;
@@ -85,5 +91,20 @@ public class GsonRequest<T> extends Request<T>{
         }
     }
 
-	
+    @Override
+    public String getBodyContentType() {
+        return PROTOCOL_CONTENT_TYPE;
+    }
+
+    @Override
+    public byte[] getBody() {
+        try {
+            return mRequestBody == null ? null : mRequestBody.getBytes(PROTOCOL_CHARSET);
+        } catch (UnsupportedEncodingException uee) {
+            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                    mRequestBody, PROTOCOL_CHARSET);
+            return null;
+        }
+    }
+
 }
