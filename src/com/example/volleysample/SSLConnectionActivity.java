@@ -58,7 +58,7 @@ public class SSLConnectionActivity extends Activity {
 		
 		actionBarSetup();
 		
-		// Initialise Volley Request Queue. 
+		// Initialise Volley Request Queue with SSL HttpStack to handle secured connection.
 		mVolleyQueue = Volley.newRequestQueue(this,new SslHttpStack(true));
 
 		mTrigger = (Button) findViewById(R.id.send_http);
@@ -97,6 +97,7 @@ public class SSLConnectionActivity extends Activity {
 		 	req.cancel();
 		 }
 		 */
+		//( or )
 		//jsonObjRequest.cancel();
 		//( or )
 		mVolleyQueue.cancelAll(TAG_REQUEST);
@@ -115,11 +116,11 @@ public class SSLConnectionActivity extends Activity {
 	}
 	
 	/*
-	 * The endpoint is hidden.Please use your correct endpoint to test Secured Http request.
+	 * The endpoint is for demo.Please use your correct endpoint to test Secured Http request.
 	 */
 	private void makeSampleHttpsRequest() {
 		
-		String url = "https://[YOUR END POINT]/masterswitch/?android=1.0";
+		String url = "https://[YOUR END POINT]";
 		
 		
 		JsonObjectRequest jsonObjRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

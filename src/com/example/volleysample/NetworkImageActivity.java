@@ -211,7 +211,7 @@ public class NetworkImageActivity extends Activity {
 		  It has default retry mechanism i set to 2 maximum retries.
 		*/
 
-		//1)
+		//1) In case you are showing image as user icon normally 50x50, you can specify the width & height.
         mImageLoader.get(testUrlToDownloadImage1, 
 							ImageLoader.getImageListener(mImageView1, 
 															R.drawable.flickr, 

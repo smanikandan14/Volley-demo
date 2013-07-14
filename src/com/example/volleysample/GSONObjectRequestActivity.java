@@ -17,9 +17,16 @@
 package com.example.volleysample;
 
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -53,6 +60,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.volleysample.model.FlickrImage;
 import com.example.volleysample.model.FlickrResponse;
 import com.example.volleysample.model.FlickrResponsePhotos;
+import com.example.volleysample.toolbox.GsonRequest;
 import com.example.volleysample.util.BitmapUtil;
 
 /**
@@ -90,7 +98,6 @@ public class GSONObjectRequestActivity extends Activity {
 		public void setTitle(String mTitle) {
 			this.mTitle = mTitle;
 		}
-		
 	}
 	
 	/*
@@ -132,7 +139,7 @@ public class GSONObjectRequestActivity extends Activity {
 		setContentView(R.layout.json_object_layout);
 		
 		actionBarSetup();
-		
+
 		// Initialise Volley Request Queue. 
 		mVolleyQueue = Volley.newRequestQueue(this);
 

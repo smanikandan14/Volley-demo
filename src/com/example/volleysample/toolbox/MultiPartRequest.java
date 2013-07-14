@@ -35,7 +35,7 @@ import com.android.volley.toolbox.JsonRequest;
 
 /**
  * MultipartRequest - To handle the large file uploads.
- * Extended from JSONRequest( If your response is JSON).
+ * Extended from JSONRequest. You might want to change to StringRequest based on your response type.
  * @author Mani Selvaraj
  *
  */
