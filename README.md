@@ -81,6 +81,7 @@ Clone the Volley project from below git repo.
     * Now right click on your project--> Properties--> Android --> Under Library section, choose ‘Add’ and select ‘Volley’ project as library dependency to your project.
 
 ## Initialise Volley
+
 ```
 mVolleyQueue = Volley.newRequestQueue(this);
 
@@ -96,17 +97,104 @@ mVolleyQueue = Volley.newRequestQueue(this);
 * NetworkImageView
 * ImageDownloader
 
+## SSL connections
+
 ## Handling Error Codes
 
 
 ## Request Cancellation
+You can cancel the request made by using any of one approach.
+
+```
+request.cancel();
+
+( or )
+
+for( Request<T> req : mRequestList) {
+	req.cancel();
+}
+
+( or )
+
+volleyQueue.cancelAll(Object);
+```
+
+You can probably store all the requests made in a screen into a List and cancel the requests one by one iterating the list.
+Or Cancel all the requests made by using *VolleyQueue* instance. 
+
+You should (must) do cancelling the requests made in activitie's **onStop()** method.
 
 ## Set PRIORITY to Requests
+You can set Priority to your requests. Normally *ImageRequests* are assigned *LOW* priority and other requests like *JsonObjectRequest* and *StringObjectRequest* are set to *NORMAL* priority.
+To change the priority for different server requests for your needs you should customize the *Request* class and override *setPriority* and *getPriority* methods.
+```
+Priority priority;
+public void setPriority(Priority priority) {
+	this.priority = priority;
+}
+
+/*
+ * If prioirty set use it,else returned NORMAL
+ * @see com.android.volley.Request#getPriority()
+ */
+public Priority getPriority() {
+    if( this.priority != null) {
+    	return priority;
+    } else {
+    	return Priority.NORMAL;	
+    }
+}	
+
+```
 
 ## Retry Policy
 
-## Enablind DEBUG Logs on adb logcat for Volley
+## Response Caching 
+Enable response caching to quickly fetch the response from cache, if below api is set to true.
 
+```
+request.setShouldCache(true);
+```
+* Handling response headers - Cache-Control
+Volley decides whether to cache the response or not, based on response headers obtained. Some of the parameters
+it looks for are *Cache-control, maxAge, Expires*.
+
+* In demo of stringObjectRequest it uses weather api, the response headers has **Cache-Control: no-cache, must-revalidate**. In this case, even if 
+*setShouldCache()* api is set true for the request, Volley decides not to store the response, because server has sent response headers as *must-revalidate*
+So storing response doesn't make sense for this api. Some of these intelligences are implemented already in Volley, you need not take the burden of
+parsing response headers for especially for caching.
+
+```
+Sample Response headers for different requests.
+
+curl -i http://api.openweathermap.org/data/2.5/weather?q=London,uk
+HTTP/1.1 200 OK
+Cache-Control: no-cache, must-revalidate
+Content-Type: application/json; charset=utf-8
+Date: Mon, 15 Jul 2013 08:10:31 GMT
+Pragma: no-cache
+Server: nginx
+X-Powered-By: OWM
+Content-Length: 402
+Connection: keep-alive
+
+curl -i http://farm4.static.flickr.com/3792/9109500182_a2721e9a32_t.jpg
+HTTP/1.1 200 OK
+Date: Sun, 23 Jun 2013 14:32:24 GMT
+Content-Type: image/jpeg
+Content-Length: 3253
+Accept-Ranges: bytes
+Cache-Control: max-age=315360000,public
+Expires: Fri, 23 Jun 2023 02:09:58 UTC
+
+```
+
+## Enablind DEBUG Logs on adb logcat for Volley
+* $adb shell
+* $setprop log.tag.Volley VERBOSE
+* logcat
+
+Now you can see Volley debug logs shown in terminal. You can test it by launching **Play Store** app which uses Volley.
 
 ## Credits
 * http://howrobotswork.wordpress.com/2013/06/02/downloading-a-bitmap-asynchronously-with-volley-example/
