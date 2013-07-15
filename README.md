@@ -39,18 +39,19 @@ try {
 ```
 
 Google has come up with Volley interface which helps developers to handle all the network related operations so that developers can concentrate
-implementing the business logic once the response is obtained.
+implementing the business logic after the HTTP response is obtained.Also having less code for network calls helps developer reduce number of bugs.
 
 *NOTE* Volley is not good for larger file download/upload operations as well video streaming operations. 
 
 Key features of the Volley are below
 
 * Develop Super fast networked applications for android.
+* Schedules all your HTTP requests running them parallely in background threads and manages those threads.
 * Gives you flexible ways to run your networking requests concurrently with synchronization.
-* Comes with inbuilt JSON parsing.
+* Comes with inbuilt JSON parsing the response.
 * Set prioirty for requests.
 * Retry policy for timeout,certain ERROR codes as Internal Server error.
-* Request cancellation.
+* Flexible Request cancellations.
 * Memory & Disk Caching for images.Batch dispatch to Image Downloads.
 * Flexible in giving your own cache implementations.
 * You can include your own HTTPStack ( to handle SSL connections, PATCH requests ).
@@ -80,19 +81,40 @@ Clone the Volley project from below git repo.
     * android.library=true  
     * Now right click on your project--> Properties--> Android --> Under Library section, choose ‘Add’ and select ‘Volley’ project as library dependency to your project.
 
-## Initialise Volley
+Using Volley involves two main classes **RequestQueue** and **Request**.
+* RequestQueue - Dispatch Queue which takes a Request and executes in a worker thread or if cache found its takes from cache and responds back to the UI main thread.
+* Request - All network(HTTP) requests are created from this class. It takes main parameters required for a HTTP request like
+	* METHOD Type - GET, POST, PUT, DELETE
+	* URL 
+	* Request data (HTTP Body)
+	* Successful Response Listener
+	* Error Listener
+Volley Provides two specific implementations of **Request**.
+	* JsonObjectRequest
+	* StringRequest
+
+## Initialise RequestQueue
 
 ```
 mVolleyQueue = Volley.newRequestQueue(this);
-
 ```
+
+You can create a instance of RequestQueue by passing any *Object* to the static method *newRequestQueue* of Volley Class. 
+In this case, we passed activity instance *this* to create the instance. Similarly while cancelling all the requests dispatched
+in this RequestQueue we should be using activity instance to cancel the requests.
+
 ## JsonObjectRequest
+
 
 ## StringRequest
 
 ## GsonRequest
 
+
+
 ## Image Download
+Most common operation in an application is *Image* download operation.
+
 * ImageRequest
 * NetworkImageView
 * ImageDownloader
@@ -103,7 +125,7 @@ mVolleyQueue = Volley.newRequestQueue(this);
 
 
 ## Request Cancellation
-You can cancel the request made by using any of one approach.
+You can cancel a single request or multiple requests or cancel requests under a TAG name. Using any of one approach.
 
 ```
 request.cancel();
@@ -122,7 +144,7 @@ volleyQueue.cancelAll(Object);
 You can probably store all the requests made in a screen into a List and cancel the requests one by one iterating the list.
 Or Cancel all the requests made by using *VolleyQueue* instance. 
 
-You should (must) do cancelling the requests made in activitie's **onStop()** method.
+You should (must) do cancelling all the requests made in activitie's **onStop()** method. ( Except where you want a POST/PUT request to continue though user leaves the screen).
 
 ## Set PRIORITY to Requests
 You can set Priority to your requests. Normally *ImageRequests* are assigned *LOW* priority and other requests like *JsonObjectRequest* and *StringObjectRequest* are set to *NORMAL* priority.
@@ -200,6 +222,23 @@ Now you can see Volley debug logs shown in terminal. You can test it by launchin
 * http://howrobotswork.wordpress.com/2013/06/02/downloading-a-bitmap-asynchronously-with-volley-example/
 * http://bon-app-etit.blogspot.in/2013/04/the-dark-side-of-asynctask.html
 * http://www.checkupdown.com/status/E304.html
-* 
+
+
+##License
+```
+ * Copyright 2013 Mani Selvaraj
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+```
 
 
