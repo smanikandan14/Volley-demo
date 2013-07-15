@@ -8,7 +8,7 @@ An demonstration of Volley - HTTP library announced by google in I/O 2013.
 Android has provided two HTTP Clients *AndroidHttpClient* (Extended from apache HTTPClient) and *HttpUrlConnection*
 to make a HTTP Request. Both has its own pros and cons. When an application is developed, we write HTTP connection classes which handles
 all the HTTP requests, creating THREADS to run in background, managing THREAD pool, response parsing, response caching, handling error codes, SSL connections, running requests in parallel and others stuffs around that.
-Every developer has his own way of implementing these functionalities.Some might use AsycnTask, some might use passing handlers created from UI thread to HTTP connection classes which then uses the handler to pass back the parsed HTTP response back to the main thread.
+Every developer has his own way of implementing these functionalities.Some might use AsycnTask for running network operations in background, or some might use passing handlers created from UI thread to HTTP connection classes which then executes network operation in worker thread and uses the handler to pass back the parsed HTTP response back to the main thread.
 
 But we end up writing same boilerplate codes repeatedly and we try to reinvent the wheel in our application development.
 
@@ -79,4 +79,39 @@ Clone the Volley project from below git repo.
     * Edit the project.properties file and the add the below line  
     * android.library=true  
     * Now right click on your project--> Properties--> Android --> Under Library section, choose ‘Add’ and select ‘Volley’ project as library dependency to your project.
+
+## Initialise Volley
+```
+mVolleyQueue = Volley.newRequestQueue(this);
+
+```
+## JsonObjectRequest
+
+## StringRequest
+
+## GsonRequest
+
+## Image Download
+* ImageRequest
+* NetworkImageView
+* ImageDownloader
+
+## Handling Error Codes
+
+
+## Request Cancellation
+
+## Set PRIORITY to Requests
+
+## Retry Policy
+
+## Enablind DEBUG Logs on adb logcat for Volley
+
+
+## Credits
+* http://howrobotswork.wordpress.com/2013/06/02/downloading-a-bitmap-asynchronously-with-volley-example/
+* http://bon-app-etit.blogspot.in/2013/04/the-dark-side-of-asynctask.html
+* http://www.checkupdown.com/status/E304.html
+* 
+
 
