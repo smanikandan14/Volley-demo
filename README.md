@@ -157,8 +157,56 @@ mVolleyQueue.add(stringRequest);
 ```
 
 ## GsonRequest
+You can customize the *Request<T>* to make a new type of Request which can give the response in Java Class Object.
+GSON is a library which is used in converting JSON to Java Class Objects and vice-versa. You write custom request which takes Java Class name as a parameter and return the response in that Class Object.
 
+You should include **gson.jar** as JAR dependency in your project. 
 
+```
+public class GsonRequest<T> extends Request<T>{
+	private Gson mGson;
+	
+	public GsonRequest(int method, String url, Class<T> cls, String requestBody, Listener<T> listener,
+	    ErrorListener errorListener) {
+		super(method, url, errorListener);
+		mGson = new Gson();        
+	}
+	        
+	@Override
+	protected Response<T> parseNetworkResponse(NetworkResponse response) {
+		try {
+		    String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+		    	T parsedGSON = mGson.fromJson(jsonString, mJavaClass);
+		    return Response.success(parsedGSON,
+		            HttpHeaderParser.parseCacheHeaders(response));
+		    
+		} catch (UnsupportedEncodingException e) {
+		    return Response.error(new ParseError(e));
+		} catch (JsonSyntaxException je) {
+		    return Response.error(new ParseError(je));
+		}
+	}
+}        
+```
+
+Using GsonRequest 
+* Takes *FlickrResponsePhotos* class as parameter and returns the response as *FlickrResponsePhotos* Object.
+* Makes life easier for developers if you have the response in your desired Class objects.
+
+```
+gsonObjRequest = new GsonRequest<FlickrResponsePhotos>(Request.Method.GET, url,
+		FlickrResponsePhotos.class, null, new Response.Listener<FlickrResponsePhotos>() {
+	@Override
+	public void onResponse(FlickrResponsePhotos response) {
+	}
+}, new Response.ErrorListener() {
+
+	@Override
+	public void onErrorResponse(VolleyError error) {
+	}
+});
+mVolleyQueue.add(gsonObjRequest);
+```
 
 ## Image Download
 Most common operation in an application is *Image* download operation.
