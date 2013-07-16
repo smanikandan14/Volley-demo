@@ -100,13 +100,61 @@ mVolleyQueue = Volley.newRequestQueue(this);
 ```
 
 You can create a instance of RequestQueue by passing any *Object* to the static method *newRequestQueue* of Volley Class. 
-In this case, we passed activity instance *this* to create the instance. Similarly while cancelling all the requests dispatched
+In this case, activity instance *this* is passed to create the instance. Similarly while cancelling all the requests dispatched
 in this RequestQueue we should be using activity instance to cancel the requests.
 
 ## JsonObjectRequest
+Creates HTTP request which helps in connecting to JSON based response API's. Takes parameters as   
 
+* HTTP METHOD 
+* A JSON object as request body ( mostly for POST & PUT api's)
+* Success & Error Listener.
 
+Volley parses the HTTP Response to a JSONObject for you. If your server api's are JSON based, you can straightway go ahead and use *JsonObjectRequest*
+
+> The **Content-Type** for this request is always set to *application/json*
+
+```
+String url = "<SERVER_API>";
+
+JsonObjectRequest jsonObjRequest = new JsonObjectRequest(Request.Method.GET,
+							url, null, 
+							new Response.Listener<JSONObject>() {
+	@Override
+	public void onResponse(JSONObject response) {
+	}
+}, new Response.ErrorListener() {
+
+	@Override
+	public void onErrorResponse(VolleyError error) {
+	}
+});
+
+mVolleyQueue.add(jsonObjRequest);
+
+```
 ## StringRequest
+To obtain the HTTP Response as a String, create HTTP Request using *StringRequest*
+Takes parameters as   
+
+* HTTP METHOD 
+* Success & Error Listener.
+
+```
+String url = "<SERVER-API>";
+
+StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+	@Override
+	public void onResponse(String response) {
+	}
+}, new Response.ErrorListener() {
+	@Override
+	public void onErrorResponse(VolleyError error) {
+	}
+});
+
+mVolleyQueue.add(stringRequest);
+```
 
 ## GsonRequest
 
@@ -120,6 +168,36 @@ Most common operation in an application is *Image* download operation.
 * ImageDownloader
 
 ## SSL connections
+
+## Adding Headers
+By default Volley adds *Content-Type* parameter in all Request Header.
+* JsonRequest --> *application/json*
+* StringRequest --> *application/x-www-form-urlencoded*
+* Request<T> --> *application/x-www-form-urlencoded*
+* 
+If you wanted to change this behavior, you need to override
+
+```
+public String getBodyContentType() {
+	return "application/x-www-form-urlencoded; charset=UTF-8";
+}
+```
+
+To add additional headers to the requests, you need to extend from the existing Requests type and implement the *getHeaders()* method
+
+```
+public class MyStringRequest extends StringRequest{
+	private Map<String, String> headers = new HashMap<String, String>();
+	@Override
+	public Map<String, String> getHeaders() throws AuthFailureError {
+		return headers;
+	}
+	
+	public void setHeader(String title, String content) {
+		headers.put(title, content);
+	}
+}
+```
 
 ## Handling Error Codes
 
