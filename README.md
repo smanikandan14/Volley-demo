@@ -296,6 +296,23 @@ Expires: Fri, 23 Jun 2023 02:09:58 UTC
 
 Now you can see Volley debug logs shown in terminal. You can test it by launching **Play Store** app which uses Volley.
 
+```
+D/Volley  (24482): [1] MarkerLog.finish: (7067 ms) [X] http://api.flickr.com/services/rest?api_key=5e045abd4baba4bbcd866e1864ca9d7b&method=flickr.interestingness.getList&format=json&nojsoncallback=1 0x86cad52e NORMAL 1
+D/Volley  (24482): [1] MarkerLog.finish: (+0   ) [ 1] add-to-queue
+D/Volley  (24482): [1] MarkerLog.finish: (+6   ) [9624] cache-queue-take
+D/Volley  (24482): [1] MarkerLog.finish: (+7   ) [9624] cache-hit-expired
+D/Volley  (24482): [1] MarkerLog.finish: (+0   ) [9625] network-queue-take
+D/Volley  (24482): [1] MarkerLog.finish: (+5726) [9625] network-http-complete
+D/Volley  (24482): [1] MarkerLog.finish: (+1158) [9625] network-parse-complete
+D/Volley  (24482): [1] MarkerLog.finish: (+169 ) [9625] network-cache-written
+D/Volley  (24482): [1] MarkerLog.finish: (+1   ) [9625] post-response
+**D/Volley  (24482): [1] MarkerLog.finish: (+0   ) [ 1] canceled-at-delivery**
+
+```
+
+The above debug logs shows that response is ignored since user has called cancelled for the request. Volley has decided to ignore the response
+before parsing the response avoiding wasteful CPU cycles.
+
 ## Credits
 * http://howrobotswork.wordpress.com/2013/06/02/downloading-a-bitmap-asynchronously-with-volley-example/
 * http://bon-app-etit.blogspot.in/2013/04/the-dark-side-of-asynctask.html
