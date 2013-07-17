@@ -209,16 +209,69 @@ mVolleyQueue.add(gsonObjRequest);
 ```
 
 ## Image Download
-Most common operation in an application is *Image* download operation.
-
+Most common operation in an application is *Image* download operation. Volley provides different ways of downloading a image.
+Volley also provides transparent caching for images.flexible *Cache* implementations for your 
 * ImageRequest
-* NetworkImageView
+	Just like other *Request* types, ImageRequest takes a *URL* as paramater and returns *Bitmap* as response on the main threa.
+
+```
+ImageRequest imgRequest = new ImageRequest(<URL>, new Response.Listener<Bitmap>() {
+		@Override
+		public void onResponse(Bitmap response) {
+			mImageView.setImageBitmap(response);
+		}
+	}, 0, 0, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
+		@Override
+		public void onErrorResponse(VolleyError error) {
+			mImageView.setImageResource(R.drawable.error);
+		}
+	});
+mVolleyQueue.add(imgRequest);
+```
+
 * ImageDownloader
+	Handles loading and caching of images from a URL.Takes *URL*, *ImageView* and *ImageListener* as parameters.Need to initialies the ImageLoader with a cache.
+Cache can be of two types *MemoryCache* ( or ) *DiskCache*. Volley provides a DiskCache implementation *DiskBasedCache*.You can always use that.
+If you need to provide your own cache implementation for ImageDownLoader you need to implement the interface *ImageCache*.
+
+
+```
+//Initialising ImageDownloader
+int max_cache_size = 1000000;
+mImageLoader = new ImageLoader(mVolleyQueue, new DiskBitmapCache(getCacheDir(),max_cache_size));
+
+( or )
+//Memorycache is always faster than DiskCache. Check it our for yourself.
+//mImageLoader = new ImageLoader(mVolleyQueue, new BitmapCache(max_cache_size));
+
+mImageLoader.get(<URL>, 
+		ImageLoader.getImageListener(mImageView, 
+					R.drawable.flickr, 
+					android.R.drawable.ic_dialog_alert),
+					//You can optional specify width & height of the bitmap to be scaled down when the image is downloaded.
+					50,50);
+
+```
+
+* NetworkImageView
+  Downloads the image as well as cancels the image request if the *ImageView* for which it was asked to download is recycled or no longer exists.
+So reduces the work of developer to manage the *ImageRequest* life cycle. Takes *URL* and *ImageDownloader*
+
+```
+mNetworkImageView.setImageUrl(testUrlToDownloadImage1, mImageLoader);
+```
 
 ## SSL connections
+Volley doesnt support secured connection to HTTP.To connect to a secured HTTP connection, you need to provide to your own *HttpStack*.  
+Download httpclient components from below link   
+* http://hc.apache.org/downloads.cgi
+* Copy these two jar files into your projects *libs* folder. **httpclient-4.2.5,httpmime-4.2.5**
+
+
+## Multipart Request
 
 ## Adding Headers
-By default Volley adds *Content-Type* parameter in all Request Header.
+By default Volley adds *Content-Type* parameter in all Request Header.  
 * JsonRequest --> *application/json*
 * StringRequest --> *application/x-www-form-urlencoded*
 * Request<T> --> *application/x-www-form-urlencoded*
@@ -248,7 +301,71 @@ public class MyStringRequest extends StringRequest{
 ```
 
 ## Handling Error Codes
+Volley checks the HTTP error codes and throws different Error types accordingly. All Error Types are extended from *VolleyError*
+Other than 200 ( OK ) & 204 ( NO_MODIFIED) Volley treats other HTTP status codes as ERROR.
+The available Errors are   
+* TimeoutError -- ConnectionTimeout or SocketTimeout
+* AuthFailureError -- 401 ( UNAUTHORIZED ) && 403 ( FORBIDDEN )
+* ServerError -- 5xx 
+* ClientError -- 4xx(Created in this demo for handling all 4xx error which are treated as Client side errors)
+* NetworkError -- No network found
+* ParseError -- Error while converting HTTP Response to JSONObject.
 
+```
+@Override
+public void onErrorResponse(VolleyError error) {
+	// Handle your error types accordingly.For Timeout & No connection error, you can show 'retry' button.
+	// For AuthFailure, you can re login with user credentials.
+	// For ClientError, 400 & 401, Errors happening on client side when sending api request.
+	// In this case you can check how client is forming the api and debug accordingly.
+	// For ServerError 5xx, you can do retry or handle accordingly.
+	if( error instanceof NetworkError) {
+	} else if( error instanceof ClientError) { 
+	} else if( error instanceof ServerError) {
+	} else if( error instanceof AuthFailureError) {
+	} else if( error instanceof ParseError) {
+	} else if( error instanceof NoConnectionError) {
+	} else if( error instanceof TimeoutError) {
+	}
+
+}
+```
+If your server implementation sends custom error codes.
+You may need to parse the *networkResponse* can be obtained from Error object to handle the agreed internal error codes.
+For example to handle the below mentioned error code, you can do like below.
+**422; 3001; Invalid parameter for: user_id (not numeric)**
+
+```
+@Override
+public void onErrorResponse(VolleyError error) {
+	hideProgressDialog();
+	if(error instanceof AuthFailureError) {
+		showAlertError(ResourcesUtil.getString(R.string.login_error_invalid_credentials));
+	}else if(error instanceof ClientError) {
+		// Convert byte to String.
+		String str = null;
+		try {
+			str = new String(error.networkResponse.data, "UTF8");
+			JSONObject errorJson = new JSONObject(str);
+			if( errorJson.has(Constants.ERROR)) {
+				JSONObject err = errorJson.getJSONObject(Constants.ERROR);
+				if(err.has(Constants.ERROR_MESSAGE)) {
+    				String errorMsg = errorJson.has(Constants.ERROR_MESSAGE);
+    				showAlertError(errorMsg);
+				}
+				return;
+			}
+				System.out.println("###### error response ########" +str);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	} else {
+		MessageUtil.showMessage(ResourcesUtil.getString(R.string.error_service), true);
+	}
+}
+
+```
 
 ## Request Cancellation
 You can cancel a single request or multiple requests or cancel requests under a TAG name. Using any of one approach.
@@ -334,6 +451,7 @@ Content-Length: 3253
 Accept-Ranges: bytes
 Cache-Control: max-age=315360000,public
 Expires: Fri, 23 Jun 2023 02:09:58 UTC
+Last-Modified: Sat, 22 Jun 2013 15:54:32 GMT
 
 ```
 
