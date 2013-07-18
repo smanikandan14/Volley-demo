@@ -211,8 +211,8 @@ mVolleyQueue.add(gsonObjRequest);
 ## Image Download
 Most common operation in an application is *Image* download operation. Volley provides different ways of downloading a image.
 Volley also provides transparent caching for images.flexible *Cache* implementations for your 
-* ImageRequest
-	Just like other *Request* types, ImageRequest takes a *URL* as paramater and returns *Bitmap* as response on the main threa.
+* ImageRequest   
+Just like other *Request* types, ImageRequest takes a *URL* as paramater and returns *Bitmap* as response on the main threa.
 
 ```
 ImageRequest imgRequest = new ImageRequest(<URL>, new Response.Listener<Bitmap>() {
@@ -229,8 +229,8 @@ ImageRequest imgRequest = new ImageRequest(<URL>, new Response.Listener<Bitmap>(
 mVolleyQueue.add(imgRequest);
 ```
 
-* ImageDownloader
-	Handles loading and caching of images from a URL.Takes *URL*, *ImageView* and *ImageListener* as parameters.Need to initialies the ImageLoader with a cache.
+* ImageDownloader   
+Handles loading and caching of images from a URL.Takes *URL*, *ImageView* and *ImageListener* as parameters.Need to initialies the ImageLoader with a cache.
 Cache can be of two types *MemoryCache* ( or ) *DiskCache*. Volley provides a DiskCache implementation *DiskBasedCache*.You can always use that.
 If you need to provide your own cache implementation for ImageDownLoader you need to implement the interface *ImageCache*.
 
@@ -253,8 +253,8 @@ mImageLoader.get(<URL>,
 
 ```
 
-* NetworkImageView
-  Downloads the image as well as cancels the image request if the *ImageView* for which it was asked to download is recycled or no longer exists.
+* NetworkImageView  
+Downloads the image as well as cancels the image request if the *ImageView* for which it was asked to download is recycled or no longer exists.
 So reduces the work of developer to manage the *ImageRequest* life cycle. Takes *URL* and *ImageDownloader*
 
 ```
@@ -267,8 +267,100 @@ Download httpclient components from below link
 * http://hc.apache.org/downloads.cgi
 * Copy these two jar files into your projects *libs* folder. **httpclient-4.2.5,httpmime-4.2.5**
 
+*httpmime* is used for MultipartRequest.
+
+You can set your SSL socket factory into the scheme and set it in *httpClient* to execute your request in Secured Layer.
+This is a detailed topic of dealing with SSL for self signed certificates. I am not getting detailed into that. But the demo has every code explaining how it is done.
+
+```
+    SslHttpStack implements HtpStack
+    
+    @Override
+    public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
+            throws IOException, AuthFailureError {
+        HttpUriRequest httpRequest = createHttpRequest(request, additionalHeaders);
+	-----------------------
+	-----------------------
+	
+	/* Register schemes, HTTP and HTTPS */
+        SchemeRegistry registry = new SchemeRegistry();
+        registry.register(new Scheme("http", new PlainSocketFactory(), 80));
+        registry.register(new Scheme("https", new EasySSLSocketFactory(mIsConnectingToYourServer), 443));
+        
+        /* Make a thread safe connection manager for the client */
+        ThreadSafeClientConnManager manager = new ThreadSafeClientConnManager(httpParams, registry);
+        HttpClient httpClient = new DefaultHttpClient(manager, httpParams); 
+    }
+```
+
+For more detail check the link i have provided in credits section.
 
 ## Multipart Request
+You application might require file/picture uploading to your server. In that case most preferred way is using *Multipart* Request.
+Volley doesnt provide support for Multipart. But you can still use volley's framework and provide you own implementation of *HttpStack* just like we used for SSL connections.
+
+```
+public class MultiPartRequest extends JsonRequest<JSONObject> {
+
+	/* To hold the parameter name and the File to upload */
+	private Map<String,File> fileUploads = new HashMap<String,File>();
+	
+	/* To hold the parameter name and the string content to upload */
+	private Map<String,String> stringUploads = new HashMap<String,String>();
+	
+	public void addFileUpload(String param,File file) {
+	    fileUploads.put(param,file);
+	}
+	
+	public void addStringUpload(String param,String content) {
+	    stringUploads.put(param,content);
+	}
+	
+	public Map<String,File> getFileUploads() {
+	    return fileUploads;
+	}
+	
+	public Map<String,String> getStringUploads() {
+	    return stringUploads;
+	}
+
+}
+
+```
+
+And in your HttpStack implementation, create *MultiPartEntity* and set it to HttpRequest. Refer *SslHttpStack* *createHttpRequest* method for more details.
+
+```
+    private static void setMultiPartBody(HttpEntityEnclosingRequestBase httpRequest,
+            Request<?> request) throws AuthFailureError {
+    	
+    	// Return if Request is not MultiPartRequest
+    	if(request instanceof MultiPartRequest == false) {
+    		return;
+    	}
+        
+    	MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);  
+        //Iterate the fileUploads
+        Map<String,File> fileUpload = ((MultiPartRequest)request).getFileUploads();
+        for (Map.Entry<String, File> entry : fileUpload.entrySet()) {
+        	multipartEntity.addPart(((String)entry.getKey()), new FileBody((File)entry.getValue()));
+        }
+
+        //Iterate the stringUploads
+        Map<String,String> stringUpload = ((MultiPartRequest)request).getStringUploads();
+        for (Map.Entry<String, String> entry : stringUpload.entrySet()) {
+        	try {
+        		multipartEntity.addPart(((String)entry.getKey()), new StringBody((String)entry.getValue()));
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
+        }
+        
+        httpRequest.setEntity(multipartEntity);
+    }
+
+```
+
 
 ## Adding Headers
 By default Volley adds *Content-Type* parameter in all Request Header.  
@@ -333,7 +425,8 @@ public void onErrorResponse(VolleyError error) {
 If your server implementation sends custom error codes.
 You may need to parse the *networkResponse* can be obtained from Error object to handle the agreed internal error codes.
 For example to handle the below mentioned error code, you can do like below.
-**422; 3001; Invalid parameter for: user_id (not numeric)**
+
+>**422; 3001; Invalid parameter for: user_id (not numeric)**
 
 ```
 @Override
@@ -350,12 +443,11 @@ public void onErrorResponse(VolleyError error) {
 			if( errorJson.has(Constants.ERROR)) {
 				JSONObject err = errorJson.getJSONObject(Constants.ERROR);
 				if(err.has(Constants.ERROR_MESSAGE)) {
-    				String errorMsg = errorJson.has(Constants.ERROR_MESSAGE);
-    				showAlertError(errorMsg);
+	    				String errorMsg = errorJson.has(Constants.ERROR_MESSAGE);
+	    				showAlertError(errorMsg);
 				}
 				return;
 			}
-				System.out.println("###### error response ########" +str);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -411,8 +503,11 @@ public Priority getPriority() {
 }	
 
 ```
+> jsonRequest.setPriority(Priority.HIGH);
 
 ## Retry Policy
+
+
 
 ## Response Caching 
 Enable response caching to quickly fetch the response from cache, if below api is set to true.
@@ -455,7 +550,7 @@ Last-Modified: Sat, 22 Jun 2013 15:54:32 GMT
 
 ```
 
-## Enablind DEBUG Logs on adb logcat for Volley
+## Enabling DEBUG Logs on adb logcat for Volley
 * $adb shell
 * $setprop log.tag.Volley VERBOSE
 * logcat
@@ -483,23 +578,24 @@ before parsing the response avoiding wasteful CPU cycles.
 * http://howrobotswork.wordpress.com/2013/06/02/downloading-a-bitmap-asynchronously-with-volley-example/
 * http://bon-app-etit.blogspot.in/2013/04/the-dark-side-of-asynctask.html
 * http://www.checkupdown.com/status/E304.html
+* http://developer.android.com/training/articles/security-ssl.html
 
 
 ##License
 ```
- * Copyright 2013 Mani Selvaraj
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ Copyright 2013 Mani Selvaraj
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 ```
 
 
