@@ -47,6 +47,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.ClientError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
@@ -251,18 +252,18 @@ public class JSONObjectRequestActvity extends Activity {
 
 			@Override
 			public void onErrorResponse(VolleyError error) {
+				// Handle your error types accordingly.For Timeout & No connection error, you can show 'retry' button.
+				// For AuthFailure, you can re login with user credentials.
+				// For ClientError, 400 & 401, Errors happening on client side when sending api request.
+				// In this case you can check how client is forming the api and debug accordingly.
+				// For ServerError 5xx, you can do retry or handle accordingly.
 				if( error instanceof NetworkError) {
-					System.out.println("######## GSONRequest NetworkError ####### ");
+				} else if( error instanceof ClientError) { 
 				} else if( error instanceof ServerError) {
-					System.out.println("######## GSONRequest ServerError ####### ");
 				} else if( error instanceof AuthFailureError) {
-					System.out.println("######## GSONRequest AuthFailureError ####### ");
 				} else if( error instanceof ParseError) {
-					System.out.println("######## GSONRequest ParseError ####### ");
 				} else if( error instanceof NoConnectionError) {
-					System.out.println("######## GSONRequest NoConnectionError ####### ");
 				} else if( error instanceof TimeoutError) {
-					System.out.println("######## GSONRequest TimeoutError ####### ");
 				}
 
 				stopProgress();
@@ -375,3 +376,4 @@ public class JSONObjectRequestActvity extends Activity {
 	}	
 
 }
+
