@@ -88,10 +88,11 @@ Using Volley involves two main classes **RequestQueue** and **Request**.
 	* URL 
 	* Request data (HTTP Body)
 	* Successful Response Listener
-	* Error Listener
-Volley Provides two specific implementations of **Request**.
-	* JsonObjectRequest
-	* StringRequest
+	* Error Listener  
+
+Volley Provides two specific implementations of **Request**.    
+* JsonObjectRequest
+* StringRequest
 
 ## Initialise RequestQueue
 
@@ -506,8 +507,47 @@ public Priority getPriority() {
 > jsonRequest.setPriority(Priority.HIGH);
 
 ## Retry Policy
+Volley provides an easy way to implement your RetryPolicy for your requests.  
+Volley sets default Socket & ConnectionTImeout to **5 secs** for all requests.
 
+**RetryPolicy** is an interface where you need to implement your logic of how you want to retry a particular request when a timeout happens.  
 
+It deals with these three parameters
+* Timeout - Specifies Socket Timeout in millis per every retry attempt.
+* Number Of Retries - Number of times retry is attempted.
+* BackOff Multiplier - A multiplier which is used to determine exponential time set to socket for every retry attempt.
+
+For ex. If RetryPolicy is created with these values
+> Timeout - 3000 secs, Num of Attempt - 3, Back Off Multiplier - 2
+
+**Attempt 1:**
+time = time + (time * Back Off Multiplier );  
+time = 3000 + 6000 = 9000  
+Socket Timeout = time;   
+Request dispatched with *Socket Timeout* of *9 Secs*  
+
+**Attempt 2:**
+time = time + (time * Back Off Multiplier );  
+time = 9000 + 18000 = 27000  
+Socket Timeout = time;   
+Request dispatched with *Socket Timeout* of *27 Secs*  
+
+**Attempt 3:**  
+time = time + (time * Back Off Multiplier );  
+time = 27000 + 54000 = 91000  
+Socket Timeout = time;  
+Request dispatched with *Socket Timeout* of *1min 31 Secs*  
+
+So at the end of *Attempt 3* if still Socket Timeout happenes Volley would throw a **TimeoutError** in your UI Error response handler.
+
+```
+//Set a retry policy in case of SocketTimeout & ConnectionTimeout Exceptions. 
+//Volley does retry for you if you have specified the policy.
+jsonObjRequest.setRetryPolicy(new DefaultRetryPolicy(5000, 
+				DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+````
 
 ## Response Caching 
 Enable response caching to quickly fetch the response from cache, if below api is set to true.
@@ -515,7 +555,7 @@ Enable response caching to quickly fetch the response from cache, if below api i
 ```
 request.setShouldCache(true);
 ```
-* Handling response headers - Cache-Control
+* Handling response headers **Cache-Control**  
 Volley decides whether to cache the response or not, based on response headers obtained. Some of the parameters
 it looks for are *Cache-control, maxAge, Expires*.
 
