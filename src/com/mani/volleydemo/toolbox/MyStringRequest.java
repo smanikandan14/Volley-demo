@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.volleysample.toolbox;
+package com.mani.volleydemo.toolbox;
 
 import java.util.HashMap;
 import java.util.Map;

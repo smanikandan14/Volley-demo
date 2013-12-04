@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.volleysample;
+package com.mani.volleydemo;
+
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -34,7 +31,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -46,36 +42,38 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.ClientError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageCache;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
-import com.example.volleysample.toolbox.FadeInImageListener;
-import com.example.volleysample.util.BitmapUtil;
-
+import com.mani.volleydemo.model.FlickrImage;
+import com.mani.volleydemo.model.FlickrResponse;
+import com.mani.volleydemo.model.FlickrResponsePhotos;
+import com.mani.volleydemo.toolbox.GsonRequest;
+import com.mani.volleydemo.util.BitmapUtil;
 
 /**
- * Demonstrates how to execute ImageRequest and NetworkImageView to download a image from a URL using Volley library.
+ * Demonstrates how to execute Gson Request using Volley library.
  * @author Mani Selvaraj
  *
  */
 
-public class NetworkImageActivity extends Activity {
+public class GSONObjectRequestActivity extends Activity {
 
 	private Button mTrigger;
 	private RequestQueue mVolleyQueue;
 	private ListView mListView;
-	private ImageView mImageView1;
-	private ImageView mImageView2;
-	private ImageView mImageView3;
-	private NetworkImageView mNetworkImageView;
 	private EfficientAdapter mAdapter;
 	private ProgressDialog mProgress;
 	private List<DataModel> mDataList;
@@ -100,23 +98,6 @@ public class NetworkImageActivity extends Activity {
 		public void setTitle(String mTitle) {
 			this.mTitle = mTitle;
 		}
-		
-	}
-	
-	public class BitmapCache extends LruCache<String,Bitmap> implements ImageCache {
-	    public BitmapCache(int maxSize) {
-	        super(maxSize);
-	    }
-	 
-	    @Override
-	    public Bitmap getBitmap(String url) {
-	        return (Bitmap)get(url);
-	    }
-	 
-	    @Override
-	    public void putBitmap(String url, Bitmap bitmap) {
-	        put(url, bitmap);
-	    }
 	}
 	
 	/*
@@ -144,52 +125,35 @@ public class NetworkImageActivity extends Activity {
 	    }
 	 
 	    public void putBitmap(String url, Bitmap bitmap) {
-	        
 	    	final Entry entry = new Entry();
-	        
-/*			//Down size the bitmap.If not done, OutofMemoryError occurs while decoding large bitmaps.
- 			// If w & h is set during image request ( using ImageLoader ) then this is not required.
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Bitmap downSized = BitmapUtil.downSizeBitmap(bitmap, 50);
-			
-			downSized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-			byte[] data = baos.toByteArray();
-	        entry.data = data ; */
-			
 	        entry.data = BitmapUtil.convertBitmapToBytes(bitmap) ;
 	        put(url, entry);
 	    }
 	}
 	
-	JsonObjectRequest jsonObjRequest;
+	GsonRequest<FlickrResponsePhotos> gsonObjRequest;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.networkimage_layout);
+		setContentView(R.layout.json_object_layout);
 		
 		actionBarSetup();
-		
+
 		// Initialise Volley Request Queue. 
 		mVolleyQueue = Volley.newRequestQueue(this);
 
 		int max_cache_size = 1000000;
 		mImageLoader = new ImageLoader(mVolleyQueue, new DiskBitmapCache(getCacheDir(),max_cache_size));
 		
-		//Memorycache is always faster than DiskCache. Check it our for yourself.
-		//mImageLoader = new ImageLoader(mVolleyQueue, new BitmapCache(max_cache_size));
-
 		mDataList = new ArrayList<DataModel>();
 		
 		mListView = (ListView) findViewById(R.id.image_list);
-		mImageView1 = (ImageView) findViewById(R.id.imageview1);
-		mImageView2 = (ImageView) findViewById(R.id.imageview2);
-		mImageView3 = (ImageView) findViewById(R.id.imageview3);
-		mNetworkImageView = (NetworkImageView) findViewById(R.id.networkimageview);
 		mTrigger = (Button) findViewById(R.id.send_http);
 		
 		mAdapter = new EfficientAdapter(this);
 		mListView.setAdapter(mAdapter);
+		
 
 		mTrigger.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -198,78 +162,22 @@ public class NetworkImageActivity extends Activity {
 				makeSampleHttpRequest();
 			}
 		});
-		
-		String testUrlToDownloadImage1 = "http://farm3.static.flickr.com/2833/9112621564_32bdfd58f3_q.jpg";
-		String testUrlToDownloadImage2 = "http://farm3.static.flickr.com/2848/9110760994_c8dc834397_q.jpg";
-			
-		/* Demonstrating 3 ways of image downloading.
-		  1 - Using ImageLoader and passing a url and imageListener. Additionally u can pass w & h
-		  2 - User NetworkImageView and pass a url & ImageLoader
-		  
-		  The above 2 uses underlying 'ImageRequest' to initiate the download.
-		  3 - Directly use ImageRequest api, by passing url, w & h, listeners, and BitmapConfig
-		  It has default retry mechanism i set to 2 maximum retries.
-		*/
-
-		//1) In case you are showing image as user icon normally 50x50, you can specify the width & height.
-        mImageLoader.get(testUrlToDownloadImage1, 
-							ImageLoader.getImageListener(mImageView1, 
-															R.drawable.flickr, 
-															android.R.drawable.ic_dialog_alert),
-							//You can specify width & height of the bitmap to be scaled down when the image is downloaded.
-							50,50);
-
-        //1 & 2) are almost same. Demonstrating you can apply animations while showing the downloaded image.
-        // You can use nice entry animations while showing images in a listview.Uses custom implemented 'FadeInImageListener'.
-		mImageLoader.get(testUrlToDownloadImage2, new FadeInImageListener(mImageView2,this));
-		
-		//3)
-		ImageRequest imgRequest = new ImageRequest(testUrlToDownloadImage2, new Response.Listener<Bitmap>() {
-				@Override
-				public void onResponse(Bitmap response) {
-					mImageView3.setImageBitmap(response);
-				}
-			}, 0, 0, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					mImageView3.setImageResource(R.drawable.ic_launcher);
-				}
-			});
-		mVolleyQueue.add(imgRequest);
-		
-		//4)
-		mNetworkImageView.setImageUrl(testUrlToDownloadImage1, mImageLoader);
-
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void actionBarSetup() {
 	  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 	    ActionBar ab = getActionBar();
-	    ab.setTitle("ImageLoading");
+	    ab.setTitle("GSONResponseParsing");
 	  }
-	}
-
-	public void onDestroy() {
-		super.onDestroy();
-		System.out.println("######### onDestroy ######### "+mAdapter);
 	}
 	
 	public void onStop() {
 		super.onStop();
 		if(mProgress != null)
 			mProgress.dismiss();
-		// Keep the list of requests dispatched in a List<Request<T>> mRequestList;
-		/*
-		 for( Request<T> req : mRequestList) {
-		 	req.cancel();
-		 }
-		 */
-		//jsonObjRequest.cancel();
-		//( or )
-		//mVolleyQueue.cancelAll(TAG_REQUEST);
 	}
-
+	  
 	private void makeSampleHttpRequest() {
 		
 		String url = "http://api.flickr.com/services/rest";
@@ -280,10 +188,10 @@ public class NetworkImageActivity extends Activity {
 		builder.appendQueryParameter("nojsoncallback", "1");
 		
 		
-		jsonObjRequest = new JsonObjectRequest(Request.Method.GET, builder.toString(), null, new Response.Listener<JSONObject>() {
+		gsonObjRequest = new GsonRequest<FlickrResponsePhotos>(Request.Method.GET, builder.toString(),
+				FlickrResponsePhotos.class, null, new Response.Listener<FlickrResponsePhotos>() {
 			@Override
-			public void onResponse(JSONObject response) {
-				System.out.println("####### Response JsonObjectRequest SUCCESS  ######## "+response.toString());
+			public void onResponse(FlickrResponsePhotos response) {
 				try {
 					parseFlickrImageResponse(response);
 					mAdapter.notifyDataSetChanged();
@@ -297,14 +205,26 @@ public class NetworkImageActivity extends Activity {
 
 			@Override
 			public void onErrorResponse(VolleyError error) {
+				// Handle your error types accordingly.For Timeout & No connection error, you can show 'retry' button.
+				// For AuthFailure, you can re login with user credentials.
+				// For ClientError, 400 & 401, Errors happening on client side when sending api request.
+				// In this case you can check how client is forming the api and debug accordingly.
+				// For ServerError 5xx, you can do retry or handle accordingly.
+				if( error instanceof NetworkError) {
+				} else if( error instanceof ClientError) { 
+				} else if( error instanceof ServerError) {
+				} else if( error instanceof AuthFailureError) {
+				} else if( error instanceof ParseError) {
+				} else if( error instanceof NoConnectionError) {
+				} else if( error instanceof TimeoutError) {
+				}
+
 				stopProgress();
-				System.out.println("####### onErrorResponse ########## "+error.getMessage()); 
 				showToast(error.getMessage());
 			}
 		});
-
-		jsonObjRequest.setTag(TAG_REQUEST);	
-		mVolleyQueue.add(jsonObjRequest);
+		gsonObjRequest.setTag(TAG_REQUEST);	
+		mVolleyQueue.add(gsonObjRequest);
 	}
 	
 	
@@ -323,37 +243,25 @@ public class NetworkImageActivity extends Activity {
 	}
 	
 	private void showToast(String msg) {
-		Toast.makeText(NetworkImageActivity.this, msg, Toast.LENGTH_LONG).show();
+		Toast.makeText(GSONObjectRequestActivity.this, msg, Toast.LENGTH_LONG).show();
 	}
 	
-	private void parseFlickrImageResponse(JSONObject response) throws JSONException {
-		System.out.println("#######  parseFlickrImageResponse   ######## "+mAdapter);
-		if(response.has("photos")) {
-			try {
-				JSONObject photos = response.getJSONObject("photos");
-				JSONArray items = photos.getJSONArray("photo");
+	private void parseFlickrImageResponse(FlickrResponsePhotos response) {
+		
+			mDataList.clear();
+			FlickrResponse photos = response.getPhotos();
+			for(int index = 0 ; index < photos.getPhotos().size(); index++) {
+			
+				FlickrImage flkrImage = photos.getPhotos().get(index);
+				
+				String imageUrl = "http://farm" + flkrImage.getFarm() + ".static.flickr.com/" + flkrImage.getServer()
+										+ "/" + flkrImage.getId() + "_" + flkrImage.getSecret() + "_t.jpg";
+				DataModel model = new DataModel();
+				model.setImageUrl(imageUrl);
+				model.setTitle(flkrImage.getTitle());
+				mDataList.add(model);
 
-				mDataList.clear();
-				
-				for(int index = 0 ; index < items.length(); index++) {
-				
-					JSONObject jsonObj = items.getJSONObject(index);
-					
-					String farm = jsonObj.getString("farm");
-					String id = jsonObj.getString("id");
-					String secret = jsonObj.getString("secret");
-					String server = jsonObj.getString("server");
-					
-					String imageUrl = "http://farm" + farm + ".static.flickr.com/" + server + "/" + id + "_" + secret + "_t.jpg";
-					DataModel model = new DataModel();
-					model.setImageUrl(imageUrl);
-					model.setTitle(jsonObj.getString("title"));
-					mDataList.add(model);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		}
 	}
 	
 	private  class EfficientAdapter extends BaseAdapter {
@@ -378,11 +286,10 @@ public class NetworkImageActivity extends Activity {
 
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
-            System.out.println("#######  getView   ########### "+position); 
             if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.networkimage_list_item, null);
+                convertView = mInflater.inflate(R.layout.list_item, null);
                 holder = new ViewHolder();
-                holder.image = (NetworkImageView) convertView.findViewById(R.id.image);
+                holder.image = (ImageView) convertView.findViewById(R.id.image);
                 holder.title = (TextView) convertView.findViewById(R.id.title);
                 convertView.setTag(holder);
             } else {
@@ -390,15 +297,18 @@ public class NetworkImageActivity extends Activity {
             }
             
             holder.title.setText(mDataList.get(position).getTitle());
-            // As contrast to 
-            holder.image.setImageUrl(mDataList.get(position).getImageUrl(),mImageLoader);
+            mImageLoader.get(mDataList.get(position).getImageUrl(), 
+            							ImageLoader.getImageListener(holder.image,R.drawable.flickr, android.R.drawable.ic_dialog_alert),
+            							//Specify width & height of the bitmap to be scaled down when the image is downloaded.
+            							50,50);
             return convertView;
         }
         
         class ViewHolder {
             TextView title;
-            NetworkImageView image;
+            ImageView image;
         }	
         
 	}	
 }
+

@@ -1,4 +1,4 @@
-package com.example.volleysample.ssl;
+package com.mani.volleydemo.ssl;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -38,9 +38,8 @@ import org.apache.http.conn.scheme.LayeredSocketFactory;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import com.example.volleysample.R;
-
-import com.example.volleysample.app.VolleySampleApplication;
+import com.mani.volleydemo.R;
+import com.mani.volleydemo.app.VolleySampleApplication;
 
 /**
  *

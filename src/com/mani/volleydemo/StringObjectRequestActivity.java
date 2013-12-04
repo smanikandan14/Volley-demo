@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.volleysample;
+package com.mani.volleydemo;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -40,7 +40,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.volleysample.ssl.SslHttpStack;
+import com.mani.volleydemo.ssl.SslHttpStack;
 
 /**
  * Demonstrates: StringObjectRequest usage.  

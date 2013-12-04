@@ -1,4 +1,4 @@
-package com.example.volleysample.model;
+package com.mani.volleydemo.model;
 
 
 public class FlickrResponsePhotos {

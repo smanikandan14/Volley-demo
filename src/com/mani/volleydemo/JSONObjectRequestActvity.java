@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.volleysample;
+package com.mani.volleydemo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,8 +63,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageCache;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.volleysample.toolbox.FadeInImageListener;
-import com.example.volleysample.util.BitmapUtil;
+import com.mani.volleydemo.toolbox.FadeInImageListener;
+import com.mani.volleydemo.util.BitmapUtil;
 
 /**
  * Demonstrates how to execute JSON Request using Volley library.

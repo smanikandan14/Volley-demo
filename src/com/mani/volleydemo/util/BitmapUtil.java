@@ -1,4 +1,4 @@
-package com.example.volleysample.util;
+package com.mani.volleydemo.util;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;

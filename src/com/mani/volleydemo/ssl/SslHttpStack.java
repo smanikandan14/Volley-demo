@@ -16,7 +16,7 @@
  */
 
 
-package com.example.volleysample.ssl;
+package com.mani.volleydemo.ssl;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +53,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.toolbox.HttpStack;
-import com.example.volleysample.toolbox.MultiPartRequest;
+import com.mani.volleydemo.toolbox.MultiPartRequest;
 
 /**
  * Custom implementation of com.android.volley.toolboox.HttpStack

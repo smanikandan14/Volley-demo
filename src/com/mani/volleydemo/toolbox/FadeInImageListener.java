@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.volleysample.toolbox;
+package com.mani.volleydemo.toolbox;
 
 import java.lang.ref.WeakReference;
 
@@ -25,7 +25,7 @@ import android.widget.ImageView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
-import com.example.volleysample.R;
+import com.mani.volleydemo.R;
 
 /**
  * Implements ImageListener interface to perform fade-In animation of image when download completes.

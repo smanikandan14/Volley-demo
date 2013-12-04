@@ -1,4 +1,4 @@
-package com.example.volleysample.app;
+package com.mani.volleydemo.app;
 
 import android.app.Application;
 import android.content.Context;

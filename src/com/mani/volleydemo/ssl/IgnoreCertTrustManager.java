@@ -1,4 +1,4 @@
-package com.example.volleysample.ssl;
+package com.mani.volleydemo.ssl;
 
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;

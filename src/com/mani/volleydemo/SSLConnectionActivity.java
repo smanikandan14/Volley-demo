@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.volleysample;
+package com.mani.volleydemo;
 
 import org.json.JSONObject;
 
@@ -34,7 +34,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.volleysample.ssl.SslHttpStack;
+import com.mani.volleydemo.ssl.SslHttpStack;
 
 /**
  * Demonstrates how to execute Https (SSL) Connectivity Request using Volley library.
