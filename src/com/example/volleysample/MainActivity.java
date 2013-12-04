@@ -30,9 +30,7 @@ public class MainActivity extends Activity {
 		TextView tt = (TextView) findViewById(R.id.test);
 		tt.setMovementMethod(LinkMovementMethod.getInstance());
 		
-		System.out.println("######## On Create ######## "+Log.isLoggable("Volley", Log.VERBOSE)+" : "+Log.isLoggable("Volley", Log.INFO));
-		
-    	String str = "Demonstration of Volley library announced by Android Team in [Google I/0 2013]. Find the source code [github]";
+    	String str = "Demonstration of Volley library announced by Android Team in [Google I/0 2013]. Find the source code [github].Demo uses Flickr REST apis.[Avoid using api key for your usage.]Thanks.";
     	
     	SpannableStringBuilder ssb = new SpannableStringBuilder(str);
 
