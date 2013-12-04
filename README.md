@@ -3,6 +3,9 @@ Volley-demo
 
 An demonstration of Volley - HTTP library announced by google in I/O 2013. 
 
+## Play Store Link for demo download  
+https://play.google.com/store/apps/details?id=com.mani.volleydemo
+
 ## Why Volley?
 
 Android has provided two HTTP Clients *AndroidHttpClient* (Extended from apache HTTPClient) and *HttpUrlConnection*
