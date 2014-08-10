@@ -228,9 +228,9 @@ public class JSONObjectRequestActvity extends Activity {
 
 	private void makeSampleHttpRequest() {
 		
-		String url = "http://api.flickr.com/services/rest";
+		String url = "https://api.flickr.com/services/rest";
 		Uri.Builder builder = Uri.parse(url).buildUpon();
-		builder.appendQueryParameter("api_key", "5e045abd4baba4bbcd866e1864ca9d7b");
+		builder.appendQueryParameter("api_key", "75ee6c644cad38dc8e53d3598c8e6b6c");
 		builder.appendQueryParameter("method", "flickr.interestingness.getList");
 		builder.appendQueryParameter("format", "json");
 		builder.appendQueryParameter("nojsoncallback", "1");

@@ -20,6 +20,7 @@ public class MainActivity extends Activity {
 	private Button mGsonParse;
 	private Button mNetworkImage;
 	private Button mSslRequest;
+	private Button mMultipartRequest;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +115,15 @@ public class MainActivity extends Activity {
 				startActivity(new Intent(MainActivity.this,SSLConnectionActivity.class));
 			}
 		});
-
+		
+		mMultipartRequest = (Button) findViewById(R.id.multipart_request);
+		mMultipartRequest.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(MainActivity.this,MultiPartRequestActivity.class));
+			}
+		});
+		
 	}
 
 }

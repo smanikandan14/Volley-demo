@@ -199,8 +199,8 @@ public class NetworkImageActivity extends Activity {
 			}
 		});
 		
-		String testUrlToDownloadImage1 = "http://farm3.static.flickr.com/2833/9112621564_32bdfd58f3_q.jpg";
-		String testUrlToDownloadImage2 = "http://farm3.static.flickr.com/2848/9110760994_c8dc834397_q.jpg";
+		String testUrlToDownloadImage1 = "https://farm3.static.flickr.com/2833/9112621564_32bdfd58f3_q.jpg";
+		String testUrlToDownloadImage2 = "https://farm3.static.flickr.com/2848/9110760994_c8dc834397_q.jpg";
 			
 		/* Demonstrating 3 ways of image downloading.
 		  1 - Using ImageLoader and passing a url and imageListener. Additionally u can pass w & h
@@ -272,7 +272,7 @@ public class NetworkImageActivity extends Activity {
 
 	private void makeSampleHttpRequest() {
 		
-		String url = "http://api.flickr.com/services/rest";
+		String url = "https://api.flickr.com/services/rest";
 		Uri.Builder builder = Uri.parse(url).buildUpon();
 		builder.appendQueryParameter("api_key", "5e045abd4baba4bbcd866e1864ca9d7b");
 		builder.appendQueryParameter("method", "flickr.interestingness.getList");
@@ -344,7 +344,7 @@ public class NetworkImageActivity extends Activity {
 					String secret = jsonObj.getString("secret");
 					String server = jsonObj.getString("server");
 					
-					String imageUrl = "http://farm" + farm + ".static.flickr.com/" + server + "/" + id + "_" + secret + "_t.jpg";
+					String imageUrl = "https://farm" + farm + ".static.flickr.com/" + server + "/" + id + "_" + secret + "_t.jpg";
 					DataModel model = new DataModel();
 					model.setImageUrl(imageUrl);
 					model.setTitle(jsonObj.getString("title"));

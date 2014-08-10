@@ -1,7 +1,11 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent" >
+    
+<RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -52,15 +56,36 @@
         android:gravity="center"
         android:textAppearance="@android:style/TextAppearance.Small"
         android:text="GSON Request" />
-    
+
     <Button
-        android:id="@+id/ssl_connection"
+        android:id="@+id/xml_response"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_normal"
         android:layout_below="@id/gson_response"
         android:gravity="center"
         android:textAppearance="@android:style/TextAppearance.Small"
+        android:text="XML Request" />
+    
+    <Button
+        android:id="@+id/multipart_request"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_below="@id/xml_response"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:text="Multipart" />
+    
+    <Button
+        android:id="@+id/ssl_connection"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_below="@id/multipart_request"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
         android:text="SSL Connection" />
     
 </RelativeLayout>
+</ScrollView>
