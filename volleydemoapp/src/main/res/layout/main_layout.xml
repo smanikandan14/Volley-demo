@@ -1,0 +1,91 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+<RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+	tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:layout_marginTop="@dimen/margin_large"/>
+    
+    <Button
+        android:id="@+id/networkimage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:layout_below="@id/test"
+        android:text="ImageLoading" />
+    
+    <Button
+        android:id="@+id/json_request"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:layout_below="@id/networkimage"
+        android:text="JSONObjectRequest" />
+
+    <Button
+        android:id="@+id/string_request"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_below="@id/json_request"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:text="StringObjectRequest" />
+
+    <Button
+        android:id="@+id/gson_response"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_below="@id/string_request"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:text="GSON Request" />
+
+    <Button
+        android:id="@+id/xml_response"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_below="@id/gson_response"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:text="XML Request" />
+    
+    <Button
+        android:id="@+id/multipart_request"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_below="@id/xml_response"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:text="Multipart" />
+    
+    <Button
+        android:id="@+id/ssl_connection"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_below="@id/multipart_request"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:text="SSL Connection" />
+    
+</RelativeLayout>
+</ScrollView>

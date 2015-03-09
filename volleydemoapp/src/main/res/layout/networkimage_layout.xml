@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+
+    <ImageView
+        android:id="@+id/imageview1"
+        android:layout_width="@dimen/image_extra_large"
+        android:layout_height="@dimen/image_extra_large"/>
+    
+    <ImageView
+        android:id="@+id/imageview2"
+        android:layout_width="@dimen/image_extra_large"
+        android:layout_height="@dimen/image_extra_large"
+        android:layout_marginLeft="@dimen/margin_normal"
+        android:layout_toRightOf="@id/imageview1"/>
+
+    <ImageView
+        android:id="@+id/imageview3"
+        android:layout_width="@dimen/image_extra_large"
+        android:layout_height="@dimen/image_extra_large"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_below="@id/imageview2"/>
+    
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/networkimageview"
+        android:layout_width="@dimen/image_extra_large"
+        android:layout_height="@dimen/image_extra_large"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_below="@id/imageview2"
+        android:layout_marginLeft="@dimen/margin_normal"
+        android:layout_toRightOf="@id/imageview3"
+        android:background="@drawable/flickr"/>
+    
+    <Button
+        android:id="@+id/send_http"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_below="@id/networkimageview"
+        android:text="trigger" />
+    
+    <ListView
+        android:id="@+id/image_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="#00000000"
+        android:scrollbars="none"
+        android:dividerHeight="1dp"
+        android:layout_below="@id/send_http"/>
+
+</RelativeLayout>

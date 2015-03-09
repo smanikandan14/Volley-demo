@@ -1,0 +1,32 @@
+<resources>
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- paddings -->
+    <dimen name="padding_small">2dp</dimen>
+    <dimen name="padding_normal">5dp</dimen>
+    <dimen name="padding_large">8dp</dimen>
+    <dimen name="padding_extra_large">15dp</dimen>
+
+    <!-- margin -->
+    <dimen name="margin_extra_small">1dp</dimen>
+    <dimen name="margin_small">2dp</dimen>
+    <dimen name="margin_normal">5dp</dimen>
+    <dimen name="margin_large">8dp</dimen>
+    <dimen name="margin_extra_large">12dp</dimen>
+    <dimen name="margin_very_large">16dp</dimen>
+    
+    <!-- images -->
+    <dimen name="image_small">24dp</dimen>
+    <dimen name="image_normal">32dp</dimen>
+    <dimen name="image_medium">48dp</dimen>
+    <dimen name="image_large">60dp</dimen>
+    <dimen name="image_extra_large">120dp</dimen>
+    
+    <!-- Button size -->
+    <dimen name="button_normal_height">40dp</dimen>
+    <dimen name="button_normal_width">100dp</dimen>
+    
+</resources>
+
